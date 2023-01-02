@@ -407,7 +407,7 @@ function getCommonDirectoryPath(pathes) {
     breakPoint: 0,
     isSame: true,
   };
-  while (true) {
+  while (obj.isSame) {
     for (let i = 0; i < pathes.length; i += 1) {
       if (pathes[0][obj.current] !== pathes[i][obj.current]) { obj.isSame = false; }
     }

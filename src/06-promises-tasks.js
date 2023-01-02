@@ -29,7 +29,7 @@
  *                                                    //  Ask her again.';
  */
 function willYouMarryMe(isPositiveAnswer) {
-  const fun = function (resolve, reject) {
+  const fun = function Fun(resolve, reject) {
     if (isPositiveAnswer === undefined) {
       reject(new Error('Wrong parameter is passed! Ask her again.'));
     }

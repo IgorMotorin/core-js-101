@@ -132,7 +132,7 @@ function retry(/* func, attempts */) {
  *
  */
 function logger(func, logFunc) {
-  return function (...arg) {
+  return function Fun(...arg) {
     const args = Array.from(arg);
     const obj = {};
     obj.callString = JSON.stringify(args);
@@ -167,7 +167,7 @@ function partialUsingArguments(fn, ...args1) {
   obj.args = Array.from(args1);
   obj.args.splice(0, 0);
 
-  return function (...args2) {
+  return function Fun(...args2) {
     obj.args = obj.args.concat(Array.from(args2));
     return fn(...obj.args);
   };
