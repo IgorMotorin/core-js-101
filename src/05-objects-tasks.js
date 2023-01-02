@@ -20,8 +20,10 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = () => this.width * this.height;
 }
 
 
@@ -35,8 +37,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 
@@ -51,8 +53,10 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const obj = JSON.parse(json);
+  const values = Object.values(obj);
+  return new proto.constructor(...values);
 }
 
 
@@ -111,32 +115,110 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  data: {
+    id: '',
+    class: [],
+    element: '',
+    attr: [],
+    pseudoClass: [],
+    pseudoElement: '',
+    out: [],
+    flag: false,
+    flagEl: false,
+    combinator: [],
+    index: [],
+    selector1: '',
+    selector2: '',
+    currentStage: 0,
+    unChangeableFields: [1, 2, 6],
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    if (this.data.flag) { this.data.currentStage = 0; this.data.flag = false; }
+    this.check(1);
+    this.data.element = value;
+    this.data.out.push(value);
+    this.data.index.push(this.data.out.length - 1);
+    this.data.flagEl = true;
+    return this;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    this.check(2);
+    this.data.id = value;
+    this.data.out.push(`#${value}`);
+    this.data.flag = true;
+    this.data.flagEl = true;
+    return this;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    this.check(3);
+    this.data.class.push(value);
+    this.data.out.push(`.${value}`);
+    this.data.flag = true;
+    return this;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    this.check(4);
+    this.data.attr.push(value);
+    this.data.out.push(`[${value}]`);
+    this.data.flag = true;
+    return this;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    this.check(5);
+    this.data.pseudoClass.push(value);
+    this.data.out.push(`:${value}`);
+    this.data.flag = true;
+    return this;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    this.check(6);
+    this.data.pseudoElement = value;
+    this.data.out.push(`::${value}`);
+    this.data.flag = true;
+    return this;
+  },
+
+  combine(selector1, combinator, selector2) {
+    this.data.combinator.push(` ${combinator} `);
+    this.data.selector1 = selector1;
+    this.data.selector2 = selector2;
+    return this;
+  },
+  stringify() {
+    this.data.combinator.forEach((item, i) => {
+      const len = this.data.index.length - 1;
+      return this.data.out.splice(this.data.index[len - i], 0, item);
+    });
+    const out = this.data.out.join('');
+    this.data.out = [];
+    this.data.index = [];
+    this.data.combinator = [];
+    this.data.currentStage = 0;
+    this.data.flag = false;
+    this.data.flagEl = false;
+    return out;
+  },
+  check(index) {
+    if (this.data.unChangeableFields.indexOf(index) !== -1 && this.data.currentStage === index) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+
+    if (index < this.data.currentStage) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    const cond1 = index === 3 || index === 4 || index === 5 || index === 6;
+    const cond2 = this.data.flagEl === false;
+    const cond3 = this.data.flag === true;
+    if (cond1 && cond2 && cond3) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    this.data.currentStage = index;
   },
 };
 
