@@ -485,37 +485,8 @@ function getMatrixProduct(m1, m2) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(position) {
-  const coordinates = [
-    [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }],
-    [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
-    [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }],
-
-    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }],
-    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }],
-    [{ x: 2, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
-
-    [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }],
-    [{ x: 2, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 2 }],
-  ];
-
-  const winner = new Set();
-  const obj = {
-    isWin: true,
-    playerCode: undefined,
-  };
-  coordinates.forEach((value) => {
-    for (let i = 1; i < value.length; i += 1) {
-      const x1 = value[i - 1].x;
-      const y1 = value[i - 1].y;
-      const x2 = value[i].x;
-      const y2 = value[i].y;
-      obj.playerCode = position[y2][x2];
-      if (position[y2][x2] !== position[y1][x1]) { obj.isWin = false; }
-    }
-    if (obj.isWin && obj.playerCode !== undefined) { winner.add(obj.playerCode); }
-  });
-  return winner.values().next().value;
+function evaluateTicTacToePosition(/* position */) {
+  throw new Error('Not implemented');
 }
 
 
